@@ -3,25 +3,58 @@
 #This script is to solve sudoku puzzles. There is one more function missing in this script. 
 #For simple sudoku puzzles this script is enough as it is
 
+# During my military service, there wasn't much for me to linger on other than the book. 
+# There was plenty of time to think. When I couldn't read a book, 
+# the only game I could play on the keypad phone was Sudoku. 
+# After a while, when I realized that my mind was using certain algorithms while solving sudoku, 
+# I decided to put it into software. After shaping it well in my head, 
+# I wrote this python sketch the day after I got back from the military. 
+#
+# This is not perfet and much has to be done.
+# Yet still it is capable of solving some of the sudoku puzzles
+#
+# I am going to develop new one within another language
+
 from math import floor, ceil, sqrt
 from copy import copy
 import time
+import json
 
-print("This script is to solve sudoku puzzles. There is one more function missing in this script. For simple sudoku puzzles this script is enough as it is")
 
 a = \
-[[3, 0, 6, 5, 0, 8, 4, 0, 0],\
-[5, 2, 0, 0, 0, 0, 0, 0, 0],\
-[0, 8, 7, 0, 0, 0, 0, 3, 1],\
-[0, 0, 3, 0, 1, 0, 0, 8, 0],\
-[9, 0, 0, 8, 6, 3, 0, 0, 5],\
-[0, 5, 0, 0, 9, 0, 6, 0, 0],\
-[1, 3, 0, 0, 0, 0, 2, 5, 0],\
-[0, 0, 0, 0, 0, 0, 0, 7, 4],\
-[0, 0, 5, 2, 0, 6, 3, 0, 0]]
+[3, 0, 6, 5, 0, 8, 4, 0, 0,\
+5, 2, 0, 0, 0, 0, 0, 0, 0,\
+0, 8, 7, 0, 0, 0, 0, 3, 1,\
+0, 0, 3, 0, 1, 0, 0, 8, 0,\
+9, 0, 0, 8, 6, 3, 0, 0, 5,\
+0, 5, 0, 0, 9, 0, 6, 0, 0,\
+1, 3, 0, 0, 0, 0, 2, 5, 0,\
+0, 0, 0, 0, 0, 0, 0, 7, 4,\
+0, 0, 5, 2, 0, 6, 3, 0, 0]
 
+b = \
+[5, 3, 0, 0, 7, 0, 0, 0, 0,\
+6, 0, 0, 1, 9, 5, 0, 0, 0,\
+0, 9, 8, 0, 0, 0, 0, 6, 0,\
+8, 0, 0, 0, 6, 0, 0, 0, 3,\
+4, 0, 0, 8, 0, 3, 0, 0, 1,\
+7, 0, 0, 0, 2, 0, 0, 0, 6,\
+0, 6, 0, 0, 0, 0, 2, 8, 0,\
+0, 0, 0, 4, 1, 9, 0, 0, 5,\
+0, 0, 0, 0, 8, 0, 0, 7, 9]
 
-def drawSudoku(sudoku):
+c = \
+[ 3, 0, 6, 5, 0, 8, 4, 0, 0,\
+5, 2, 0, 0, 0, 0, 0, 0, 0 , \
+0, 8, 7, 0, 0, 0, 0, 3, 1 , \
+0, 0, 3, 0, 1, 0, 0, 8, 0 , \
+9, 0, 0, 8, 6, 3, 0, 0, 5 , \
+0, 5, 0, 0, 9, 0, 6, 0, 0 , \
+1, 3, 0, 0, 0, 0, 2, 5, 0 , \
+0, 0, 0, 0, 0, 0, 0, 7, 4 , \
+0, 0, 5, 2, 0, 6, 3, 0, 0 ]
+
+def draw_sudoku(sudoku):
 	a = sudoku
 	print("drawing..")
 	row = int(sqrt(len(sudoku)))
@@ -32,7 +65,7 @@ def drawSudoku(sudoku):
 		print(line)
 
 
-def calcPosibility(sudoku, number):
+def calc_posibility(sudoku, number):
 	pos = [str(number)]
 	for i in range(9):
 		for j in range(9):
@@ -52,18 +85,18 @@ def calcPosibility(sudoku, number):
 	#drawSudoku(pos)
 	return pos
 
-def solvePosibleTiles(sudoku):
+def solve_posibleTiles(sudoku):
     posibles = [None]* 9
     for number in range(9):
-        posibles[number] = calcPosibility(sudoku, number + 1)
+        posibles[number] = calc_posibility(sudoku, number + 1)
     return posibles
 
-def analysePoses(posibles, number, sudoku):
+def analyse_poses(posibles, number, sudoku):
     pos = posibles
     num = number
     sudoku = sudoku
     print("analaysing posibilities of "+str(num))
-    drawSudoku(pos)
+    draw_sudoku(pos)
     #looking for squares
     squareTile = [None]*9
     squarePosTile = [None]*9
@@ -75,7 +108,7 @@ def analysePoses(posibles, number, sudoku):
             for j in range(3):
                 squareTile[i*3 + j] = copy(sudoku[floor(sq / 3) * 27 + i*9 + (sq % 3)*3 + j])
         if squareTile.count(number) == 1:
-            drawSudoku(squareTile)
+            draw_sudoku(squareTile)
             print("number in {} sq {} number ".format(sq, number))
             for i in range(3):
                 for j in range(3):
@@ -114,13 +147,13 @@ def analysePoses(posibles, number, sudoku):
     
 
     print("probability tile...")               
-    drawSudoku(pos)
+    draw_sudoku(pos)
     return pos
 
 def single_possiblity_inCell():
     pass
 
-def updateSudoku(posibles, number, sudoku):
+def update_sudoku(posibles, number, sudoku):
     sudoku = sudoku
     line = ['0']*9
     pos = posibles
@@ -192,11 +225,11 @@ def look_singleCell_possib(posMatrix, sud, print_res=False):
     return sud
                     
 
-def solveSudoku(sudoku):
+def solve_sudoku(sudoku):
     posibles = [['0']*81]*9
-    drawSudoku(sudoku)
+    draw_sudoku(sudoku)
     sudokuSolved = False
-    posibles = solvePosibleTiles(sudoku)
+    posibles = solve_posibleTiles(sudoku)
     global updated
     updated = True
     start_time = time.time()
@@ -205,24 +238,24 @@ def solveSudoku(sudoku):
     while not sudokuSolved and updated :
         updated = False
         print("/n NewLoop /n")
-        posibles = solvePosibleTiles(sudoku)
+        posibles = solve_posibleTiles(sudoku)
         for number in range(9):
-            posibles[number] = analysePoses(posibles[number], number+1, sudoku)
+            posibles[number] = analyse_poses(posibles[number], number+1, sudoku)
         for number in range(9):
-            sudoku = updateSudoku(posibles[number], number + 1, sudoku)
+            sudoku = update_sudoku(posibles[number], number + 1, sudoku)
         print("latest answers of Sudoku Tile")
         #drawSudoku(sudoku)
 
         print("/n NewLoop /n")
-        posibles = solvePosibleTiles(sudoku)
+        posibles = solve_posibleTiles(sudoku)
         for number in range(9):
-            posibles[number] = analysePoses(posibles[number], number+1, sudoku)
+            posibles[number] = analyse_poses(posibles[number], number+1, sudoku)
         for number in range(9):
-            sudoku = updateSudoku(posibles[number], number + 1, sudoku)
+            sudoku = update_sudoku(posibles[number], number + 1, sudoku)
         print("latest answers of Sudoku Tile")
 
         sudoku = look_singleCell_possib(posibles, sudoku)
-        drawSudoku(sudoku)
+        draw_sudoku(sudoku)
         print("updated " + str(updated))
         sudokuSolved = True
         for num in range(9):
@@ -231,6 +264,38 @@ def solveSudoku(sudoku):
     time_elapsed = time.time() - start_time
     print("time required to solve  " + str(time_elapsed))
 
+
+def check_input(sudoku):
+    if type(sudoku) != list:
+        return False
+    if len(sudoku) != 81:
+        return False
+    return True
+
+def main():
+    print("this program solves sudoku puzzles.")
+    print("enter sudoku puzle as a json array")
+    sudoku_string = input()
+    sudoku = json.loads(sudoku_string)
+    is_input_ok = check_input(sudoku)
+    if not is_input_ok:
+        PromptImproperInput()
+        return
+    solve_sudoku(sudoku)
+    input()
+
+
+def main(sudoku):
+    is_input_ok = check_input(sudoku)
+    if not is_input_ok:
+        PromptImproperInput()
+        return
+    solve_sudoku(sudoku)
+    input()
+
+def PromptImproperInput():
+    print("input you entered is not in a correct format.")
+
 if __name__ == "__main__":
-    solveSudoku(a)
+    main(c)
 
